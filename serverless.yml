@@ -12,12 +12,18 @@ provider:
   region: "ca-central-1"
   environment:
     AUCTIONS_TABLE_NAME: ${self:custom.AuctionsTable.name}
+    MAIL_QUEUE_URL: ${self:custom.MailQueue.url}
+    AUCTIONS_BUCKET_NAME: ${self:custom.AuctionsBucket.name}
   iamRoleStatements:
     - ${file(iam/AuctionsTableIAM.yml):AuctionsTableIAM}
+    - ${file(iam/MailQueueIAM.yml):MailQueueIAM}
+    - ${file(iam/AuctionsBucketIAM.yml):AuctionsBucketIAM}
 
 resources:
   Resources:
     AuctionsTable: ${file(resources/AuctionsTable.yml):AuctionsTable}
+    AuctionsBucket: ${file(resources/AuctionsBucket.yml):AuctionsBucket}
+    AuctionsBucketPolicy: ${file(resources/AuctionsBucket.yml):AuctionsBucketPolicy}
 
 functions:
   createAuction:
@@ -27,6 +33,7 @@ functions:
           method: POST
           path: /auction
           authorizer: ${self:custom.authorizer}
+          cors: true
 
   getAuctions:
     handler: src/handlers/getAuctions.handler
@@ -35,6 +42,7 @@ functions:
           method: GET
           path: /auctions
           authorizer: ${self:custom.authorizer}
+          cors: true
 
   getAuction:
     handler: src/handlers/getAuction.handler
@@ -43,6 +51,7 @@ functions:
           method: GET
           path: /auction/{id}
           authorizer: ${self:custom.authorizer}
+          cors: true
 
   placeBid:
     handler: src/handlers/placeBid.handler
@@ -51,19 +60,31 @@ functions:
           method: PATCH
           path: /auction/{id}/bid
           authorizer: ${self:custom.authorizer}
+          cors: true
 
   processAuctions:
     handler: src/handlers/processAuctions.handler
     events:
-      - schedule: rate(55 minutes)
+      - schedule: rate(15 minutes)
+
+  uploadAuctionPicture:
+    handler: src/handlers/uploadAuctionPicture.handler
+    events:
+      - http:
+          method: PATCH
+          path: auction/{id}/picture
+          authorizer: ${self:custom.authorizer}
+          cors: true
 
 custom:
-  #arn:aws:lambda:ca-central-1:636589585115:function:auth-service-dev
-  #arn:aws:lambda:ca-central-1:636589585115:function:auth-service-dev-auth
-  #arn:aws:lambda:ca-central-1:636589585115:function:auth-service-dev-auth
   authorizer: "arn:aws:lambda:${aws:region}:${aws:accountId}:function:auth-service-${self:provider.stage}-auth"
   AuctionsTable:
     name: !Ref AuctionsTable
     arn: !GetAtt AuctionsTable.Arn
+  MailQueue:
+    arn: ${cf:notification-service-${self:provider.stage}.MailQueueArn}
+    url: ${cf:notification-service-${self:provider.stage}.MailQueueUrl}
+  AuctionsBucket:
+    name: auctions-bucket-kingnuada-${self:provider.stage}
   bundle:
     linting: false
