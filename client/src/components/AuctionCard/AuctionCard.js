@@ -4,12 +4,12 @@ Is it your auction? (You will be able edit, the price, and the picture, or add a
 If its not your card, you should be able to bid on it.
 If you have a bid on it, it should indicate at a distance that you are the current leader
 */
-import { Card, Image, Group, Badge, Text, Skeleton, Button } from '@mantine/core';
+import { Card, Image, Group, Badge, Text, Button } from '@mantine/core';
 import Countdown from 'react-countdown'; //Build this yourself.
 
 export default function AuctionCard(props) {
     console.log(`Props: ${JSON.stringify(props)}`)
-    const { endingAt, seller, status, createdAt, pictureURL, highestBid, title, id, userDetail } = props;
+    const { endingAt, seller, createdAt, pictureURL, highestBid, title, userDetail } = props;
     return (
         <Card shadow="sm" p="lg">
             <Card.Section>
@@ -21,6 +21,7 @@ export default function AuctionCard(props) {
 
             </Card.Section>
             {/*Logic to see if you are highest bidder should go here, else just show bid*/}
+            <Text size="xs" align="right">Listed: {new Date(createdAt).toLocaleDateString('en-us')}</Text>
             <Group>
                 <Badge color="teal" variant="light">Current Bid: {highestBid.amount}</Badge>
                 <Countdown date={endingAt}

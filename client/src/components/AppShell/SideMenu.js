@@ -1,12 +1,22 @@
 import { Group, Navbar, UnstyledButton, Text } from '@mantine/core';
 import User from './User';
-import { DeviceAnalytics, ListDetails, History } from 'tabler-icons-react';
+import { Award, DeviceAnalytics, ListDetails, History } from 'tabler-icons-react';
 import { Link } from "react-router-dom";
 
 export default function SideMenu(props) {
 
     return (
         <Navbar height={800} p="xs" width={{ base: 340 }}>
+            <Navbar.Section mt="xs" >
+                <Link to="/createauction">
+                    <UnstyledButton>
+                        <Group>
+                            <Award color="green" />
+                            <Text>Create new Auction</Text>
+                        </Group>
+                    </UnstyledButton>
+                </Link>
+            </Navbar.Section>
             <Navbar.Section mt="xs" >
                 <Link to="/allauctions">
                     <UnstyledButton>
@@ -21,7 +31,7 @@ export default function SideMenu(props) {
                 <Link to="/myauctions">
                     <UnstyledButton>
                         <Group>
-                            <DeviceAnalytics />
+                            <DeviceAnalytics color={'#b5d279'} />
                             <Text>Your Auctions</Text>
                         </Group>
                     </UnstyledButton>
@@ -31,7 +41,7 @@ export default function SideMenu(props) {
                 <Link to="/closedauctions">
                     <UnstyledButton>
                         <Group>
-                            <History />
+                            <History color="gray" />
                             <Text>All CLOSED Auctions</Text>
                         </Group>
                     </UnstyledButton>
@@ -40,9 +50,8 @@ export default function SideMenu(props) {
             <Navbar.Section>
                 <User />
             </Navbar.Section>
-            <Navbar.Section>
-                Stats here maybe? 
-            </Navbar.Section>
         </Navbar>
-    );
+    )
+
+
 }
