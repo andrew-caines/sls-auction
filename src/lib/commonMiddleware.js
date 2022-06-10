@@ -8,5 +8,9 @@ export default handler => middy(handler).use([
     httpJsonBodyParse(),
     httpEventNormalizer(),
     httpErrorHandler(),
-    cors(),
+    cors({
+        credentials: true,
+        origin: '*',
+        origins: ['http://localhost:3000','https://auctions.caines.biz']
+    }),
 ]);
