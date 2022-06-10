@@ -1,6 +1,6 @@
 #AWS Auction Example
 
-https://www.caines.biz
+https://auction.caines.biz
 
 ## What's included
 
