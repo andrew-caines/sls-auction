@@ -9,6 +9,7 @@ const initalState = {
     base_URL: "https://59ri3t8ope.execute-api.ca-central-1.amazonaws.com/dev/"
 };
 let id_token;
+let userDetails;
 
 export const GlobalStateProvider = (props) => {
     const [state, dispatch] = useReducer(globalStateReducer, initalState);
@@ -18,6 +19,8 @@ export const GlobalStateProvider = (props) => {
         let token = await getIdTokenClaims();
         //console.log(JSON.stringify(token));
         let idToken = token.__raw;
+        userDetails = token;
+        console.log(`userDetail is now ${JSON.stringify(userDetails)}`)
         axios.defaults.headers.common['Authorization'] = `Bearer ${idToken}`;
         id_token = idToken;
     }
@@ -63,7 +66,7 @@ export const GlobalStateProvider = (props) => {
     }
 
     const value = useMemo(() => {
-        return { state, placeBid, uploadPicture, updateSomething }
+        return { state, placeBid, uploadPicture, updateSomething, userDetails }
     }, [state]);
 
     console.log(`Global State initalized.`);

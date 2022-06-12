@@ -10,20 +10,44 @@ const dynamodb = new AWS.DynamoDB.DocumentClient();
 
 async function getAuctions(event, context) {
     const { status } = event.queryStringParameters;
+    const { email } = event.requestContext.authorizer;
     let auctions;
-    const params = {
-        TableName: process.env.AUCTIONS_TABLE_NAME,
-        IndexName: 'statusAndEndDate',
-        KeyConditionExpression: '#status = :status',
-        ExpressionAttributeValues: {
-            ':status': status,
-        },
-        ExpressionAttributeNames: {
-            '#status': 'status'
-        }
-    };
+    let params;
+    switch (status) {
+        case 'CLOSED':
+        case 'OPEN':
+            params = {
+                TableName: process.env.AUCTIONS_TABLE_NAME,
+                IndexName: 'statusAndEndDate',
+                KeyConditionExpression: '#status = :status',
+                ExpressionAttributeValues: {
+                    ':status': status,
+                },
+                ExpressionAttributeNames: {
+                    '#status': 'status'
+                }
+            };
+            break;
+        case 'MINE':
+            params = {
+                TableName: process.env.AUCTIONS_TABLE_NAME,
+                IndexName: 'sellersEmail',
+                KeyConditionExpression: '#seller = :email',
+                ExpressionAttributeValues: {
+                    ':email': email,
+                },
+                ExpressionAttributeNames: {
+                    '#seller': 'seller'
+                }
+            };
+            break;
+        default:
+            console.log(`[getAuctions] Received an invalid status type of ${status}`);
+            break;
+    }
     try {
         //Scan database assign value to auctions
+        console.info(`[getAuctions] called with Params ${JSON.stringify(params)}`);
         const result = await dynamodb.query(params).promise();
         auctions = result.Items;
     } catch (err) {

@@ -10,6 +10,8 @@ AuctionsTable:
         AttributeType: S
       - AttributeName: endingAt
         AttributeType: S
+      - AttributeName: seller
+        AttributeType: S
     KeySchema:
       - AttributeName: id
         KeyType: HASH
@@ -20,5 +22,11 @@ AuctionsTable:
             KeyType: HASH
           - AttributeName: endingAt
             KeyType: RANGE
+        Projection:
+          ProjectionType: ALL
+      - IndexName: sellersEmail
+        KeySchema:
+          - AttributeName: seller
+            KeyType: HASH
         Projection:
           ProjectionType: ALL

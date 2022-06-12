@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
 import axios from 'axios';
-import { ActionIcon, Loader, Group, Center } from '@mantine/core';
-import { Refresh } from 'tabler-icons-react';
+import { ActionIcon, Loader, Group, Center, Blockquote } from '@mantine/core';
+import { Refresh, Flame } from 'tabler-icons-react';
 import AuctionCard from './AuctionCard/AuctionCard';
 
 export default function AllAuctions(props) {
@@ -46,6 +46,14 @@ export default function AllAuctions(props) {
                 <Loader color="teal" variant="bars" />
             </Center>
 
+        );
+    }
+    if (auctions.length === 0) {
+        //There are no current auctions, so somethign other than a blank page
+        return (
+            <Blockquote cite="Sir Andrew Caines, First of his name." icon={<Flame size={24} color="red" />}>
+                Yo yo yo, looks like there are no Auctions, be a man and make one.
+            </Blockquote>
         );
     }
     if (auctions !== null) {
