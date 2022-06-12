@@ -11,6 +11,10 @@ export default handler => middy(handler).use([
     cors({
         credentials: true,
         origin: '*',
-        origins: ['http://localhost:3000','https://auctions.caines.biz']
+        origins: [
+            'http://localhost:3000',
+            'https://auctions.caines.biz',
+            'https://auction.caines.biz'
+        ]
     }),
 ]);

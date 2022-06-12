@@ -7,6 +7,7 @@ If a user clicks on the Avatar it will pop up a modal with thier details (some f
 import { useAuth0 } from '@auth0/auth0-react';
 import { Avatar, Box, Button, Group, Text, Loader, Notification } from '@mantine/core';
 
+
 export default function UserProfile(props) {
     const {
         isLoading,
@@ -33,8 +34,8 @@ export default function UserProfile(props) {
     }
 
     if (isAuthenticated) {
-        console.log(`User: ${JSON.stringify(user)}`);
         //User has successfully auth'd. Show Avatar , and functionality for profile inspection, offer LOGOUT button 
+        //setToken(!token);
         return (
             <Group>
                 <Avatar src={user.picture} radius="xl" />
@@ -54,7 +55,8 @@ export default function UserProfile(props) {
         return (
             <Group>
                 <Avatar src={null} />
-                <Button onClick={() => loginWithRedirect()}>Log In</Button>
+                <Button onClick={() => loginWithRedirect()
+                }>Log In</Button>
             </Group>
         )
     }

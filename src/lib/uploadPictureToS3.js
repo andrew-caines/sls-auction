@@ -3,7 +3,7 @@ import AWS from 'aws-sdk';
 const s3 = new AWS.S3();
 
 export async function uploadPictureToS3(key, body) {
-    console.log(`[uploadPictureToS3] called with KEY: ${key} BODY: ${body}`);
+    //console.log(`[uploadPictureToS3] called with KEY: ${key} BODY: ${body}`);
     const result = await s3.upload({
         Bucket: process.env.AUCTIONS_BUCKET_NAME,
         Key: key,

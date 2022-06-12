@@ -14,24 +14,43 @@ async function placeBid(event, context) {
     const { email } = event.requestContext.authorizer;
     let updatedAuction;
     const auction = await getAuctionById(id);
+    console.log(`AMOUNT CAME IN AS: ${amount}`)
     //Bid idenity Validation
     if (email === auction.seller) {
-        throw new createError.Forbidden(`You cannont bid on your own auctions!`);
-     }
+        let success = false;
+        let message = "You cannont bid on your own auctions!";
+        return {
+            statusCode: 200,
+            body: JSON.stringify({ success, message }),
+        };
+        //throw new createError(406, `You cannont bid on your own auctions!`, { expose: true });
+    }
 
     //Avoid double bidding
     if (email === auction.highestBid.bidder) {
-        throw new createError.Forbidden(`You are already the highest bidder!`);
-     }
-     
+        let success = false;
+        let message = "You are already the highest bidder!";
+        return {
+            statusCode: 200,
+            body: JSON.stringify({ success, message }),
+        };
+        //throw new createError(406, `You are already the highest bidder!`, { expose: true });
+    }
+
     //Auction Status Validation
     if (auction.status !== 'OPEN') {
         throw new createError.Forbidden(`You can not bid on closed auctions.`);
     }
 
     // Bid amount Validation
-    if (amount <= auction.highestBid.amount) {
-        throw new createError.Forbidden(`The bid is not higher than current bid, place a bid greater than ${auction.highestBid.amount} to proceed.`);
+    if (amount < auction.highestBid.amount) {
+        let success = false;
+        let message = `The bid is not higher than current bid, place a bid greater than ${auction.highestBid.amount} to proceed.`;
+        return {
+            statusCode: 200,
+            body: JSON.stringify({ success, message }),
+        };
+        //throw new createError(406, `The bid is not higher than current bid, place a bid greater than ${auction.highestBid.amount} to proceed.`, { expose: true });
     }
 
     try {
@@ -40,7 +59,7 @@ async function placeBid(event, context) {
             Key: { id },
             UpdateExpression: 'set highestBid.amount = :amount, highestBid.bidder = :bidderEmail',
             ExpressionAttributeValues: {
-                ':amount': amount,
+                ':amount': parseFloat(amount),
                 ':bidderEmail': email
             },
             ReturnValues: 'ALL_NEW'
@@ -56,9 +75,10 @@ async function placeBid(event, context) {
     if (!updatedAuction) {
         throw new createError.NotFound(`Auction with ID: ${id} not found!`);
     }
+    let new_body = { ...updatedAuction, success: true }
     return {
         statusCode: 200,
-        body: JSON.stringify(updatedAuction),
+        body: JSON.stringify(new_body),
     };
 }
 

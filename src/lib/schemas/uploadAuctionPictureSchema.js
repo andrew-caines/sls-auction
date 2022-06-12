@@ -3,8 +3,14 @@ const schema = {
     properties: {
         body: {
             type: 'string',
-            minLength: 1,
-            pattern: '\=$'
+            properties: {
+                base64Data: {
+                    type: 'string',
+                    minLength: 1,
+                    pattern: '\=$'
+                }
+            },
+            required: ['base64Data']
         }
     },
     required: [

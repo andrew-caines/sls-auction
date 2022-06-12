@@ -6,7 +6,7 @@ AuctionsBucket:
       Rules:
         - Id: ExpirePictures
           Status: Enabled
-          ExpirationInDays: 1
+          ExpirationInDays: 7
 
 AuctionsBucketPolicy:
   Type: AWS::S3::BucketPolicy
