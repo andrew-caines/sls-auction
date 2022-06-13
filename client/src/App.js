@@ -1,4 +1,3 @@
-
 import { AppShell, Navbar, Header } from '@mantine/core';
 import { Routes, Route, } from "react-router-dom";
 import { ProtectedRoute } from './components/ProtectedRoute';

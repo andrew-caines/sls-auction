@@ -20,7 +20,7 @@ export const GlobalStateProvider = (props) => {
         //console.log(JSON.stringify(token));
         let idToken = token.__raw;
         userDetails = token;
-        console.log(`userDetail is now ${JSON.stringify(userDetails)}`)
+        //console.log(`userDetail is now ${JSON.stringify(userDetails)}`)
         axios.defaults.headers.common['Authorization'] = `Bearer ${idToken}`;
         id_token = idToken;
     }
