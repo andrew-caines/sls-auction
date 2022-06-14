@@ -3,40 +3,25 @@ import { useAuth0 } from '@auth0/auth0-react';
 import axios from 'axios';
 import { ActionIcon, Loader, Group, Center, Blockquote } from '@mantine/core';
 import { Refresh, Flame } from 'tabler-icons-react';
-import AuctionCard from './AuctionCard/AuctionCard';
-import { useLocation } from 'react-router-dom';
-import AuctionEmpty from './AuctionCard/AuctionEmpty';
-
+import AuctionCard from '../AuctionCard/AuctionCard';
 
 export default function AllAuctions(props) {
-    let location = useLocation();
     const { getIdTokenClaims } = useAuth0();
     const [auctions, setAuctions] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const [userDetails, setUserDetails] = useState(null);
-    let status;
 
     const fetchData = async () => {
-
-        switch (location.pathname) {
-            case "/allauctions":
-                status = 'OPEN';
-                break;
-            case "/closedauctions":
-                status = 'CLOSED';
-                break;
-            case "/myauctions":
-                status = "MINE";
-                break;
-            default:
-                status = "OPEN";
-
-        };
-        const URL = `/auctions?status=${status}`; //This also should be hoisted outta here.
+        const URL = "/auctions?status=CLOSED"; //This also should be hoisted outta here.
         setIsLoading(true);
         const id = await getIdTokenClaims();
         setUserDetails(id); //In the future, this will be in context, so it wont need to be passed down to Auction card, but for now it will
-        const config = { headers: {} }
+        const config = {
+            headers: {
+
+                "Content-Type": "application/x-www-form-urlencoded"
+            }
+        }
         const result = await axios.get(URL, config);
         //console.log(`result = ${JSON.stringify(result.data)}`);
         setAuctions(result.data);
@@ -53,7 +38,7 @@ export default function AllAuctions(props) {
         }
 
         return () => { controller.abort(); };
-    }, [location]);// eslint-disable-line react-hooks/exhaustive-deps
+    }, []);// eslint-disable-line react-hooks/exhaustive-deps
 
     if (isLoading) {
         return (
@@ -63,17 +48,19 @@ export default function AllAuctions(props) {
 
         );
     }
-    
     if (auctions.length === 0) {
-        //There are no current auctions, Show the correct response for 3 possible paths
-        return (<AuctionEmpty auctionType={status} />)
+        //There are no current auctions, so somethign other than a blank page
+        return (
+            <Blockquote cite="Sir Andrew Caines, First of his name." icon={<Flame size={24} color="red" />}>
+                Yo yo yo, looks like there are no Auctions, be a man and make one.
+            </Blockquote>
+        );
     }
-
     if (auctions !== null) {
         //console.log(`auctions: ${JSON.stringify(auctions)}`);
         return (
             <>
-                <ActionIcon loading={isLoading} onClick={() => fetchData(status)}>
+                <ActionIcon loading={isLoading} onClick={() => fetchData()}>
                     <Refresh color="green" />
                 </ActionIcon>
                 <hr></hr>

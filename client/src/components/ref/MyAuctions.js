@@ -3,7 +3,7 @@ import { useAuth0 } from '@auth0/auth0-react';
 import axios from 'axios';
 import { ActionIcon, Loader, Group, Center, Blockquote } from '@mantine/core';
 import { Refresh, Flame } from 'tabler-icons-react';
-import AuctionCard from './AuctionCard/AuctionCard';
+import AuctionCard from '../AuctionCard/AuctionCard';
 
 export default function AllAuctions(props) {
     const { getIdTokenClaims } = useAuth0();
@@ -12,7 +12,7 @@ export default function AllAuctions(props) {
     const [userDetails, setUserDetails] = useState(null);
 
     const fetchData = async () => {
-        const URL = "/auctions?status=CLOSED"; //This also should be hoisted outta here.
+        const URL = "/auctions?status=MINE"; //This also should be hoisted outta here.
         setIsLoading(true);
         const id = await getIdTokenClaims();
         setUserDetails(id); //In the future, this will be in context, so it wont need to be passed down to Auction card, but for now it will
